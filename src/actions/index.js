@@ -4,9 +4,16 @@ import jsonPlaceholder from '../apis/jsonPlaceholder';
 export const fetchPostsAndUsers = () => async (dispatch, getState) => { // Wire up to PostList
     console.log('About to fetch');
     await dispatch(fetchPosts());
-    
-   const userIds = _.uniq(_.map(getState().posts, 'userId'))
-   userIds.forEach(id => dispatch(fetchUser(id)))
+
+    _.chain(getState().posts)
+        .map('userId')
+        .uniq()
+        .forEach(id => dispatch(fetchUser(id)))
+        .value(); // <-- Execute all steps, map over posts and find unique values
+
+            // alternate approach
+    // const userIds = _.uniq(_.map(getState().posts, 'userId'))
+    // userIds.forEach(id => dispatch(fetchUser(id)))
     console.log('fetched');
 };
 
